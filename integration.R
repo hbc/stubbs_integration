@@ -11,7 +11,6 @@ library(ggplot2)
 cutoffs <- seq(1, 1000, 10)
 
 z <-  list()
-
 z <-  unlist(Map(function(x) nrow(subset(tab, count >= x)), cutoffs))
 
 qplot(cutoffs, z) +
@@ -21,16 +20,20 @@ qplot(cutoffs, z) +
   theme_bw() +
     theme(text=element_text(family="Gill Sans MT", size=10))
 
-filtered <-  subset(tab, count > 10)
-
-library(dplyr)
-num_per_chrom <- filtered %>% group_by(chrom) %>% summarise(number=n())
-
-
+num_per_chrom <- tab %>% group_by(chrom) %>% summarise(number=n())
 ggplot(num_per_chrom, aes(chrom, number)) +
   geom_bar(stat='identity', position='dodge') +
   ylab("number of integrations with count > 10") +
   xlab("") +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle=90),
+        text=element_text(family="Gill Sans MT", size=10))
+
+ggplot(subset(tab, chrom ==  "chr1"), aes(start, count)) +
+  geom_point(size=1.25) +
+  ylab("integrations") +
+  xlab("position") +
+  scale_y_log10() +
   theme_bw() +
   theme(axis.text.x = element_text(angle=90),
         text=element_text(family="Gill Sans MT", size=10))
